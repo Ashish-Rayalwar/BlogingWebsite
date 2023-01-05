@@ -5,14 +5,16 @@ const authorSchema = new mongoose.Schema({
         type:String,
         required:true,
         
-        trim:true
+        trim:true,
+        lowercase:true
         
     },
     lname:{
         type:String,
         required:true,
        
-        trim:true
+        trim:true,
+        lowercase:true
     },
 
     title : {
@@ -26,7 +28,8 @@ const authorSchema = new mongoose.Schema({
         type : String,
         required:true,
         unique:true,
-        trim:true
+        trim:true,
+        lowercase:true
        
     },
     password : {

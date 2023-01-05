@@ -15,25 +15,29 @@ const createBlog = async (req, res) => {
 
     let validateObjectId = /^[a-f\d]{24}$/i
     
-    if(Object.keys(data).length==0) return res.status(400).send("body is empty")
+    if(Object.keys(data).length==0) return res.status(400).send({msg:"body is empty"})
 
-    const {title,body,authorId,category} = data
+    const {title,body,authorId,tags,category} = data
 
-    if(!title) return res.status(400).send("title is mandatory")
+  
 
-    if(!body) return res.status(400).send("body is mandatory")
+    if(!title) return res.status(400).send({msg:"title is mandatory"})
 
-    if(!authorId) return res.status(400).send("AuthorId is mandatory")
+    if(!body) return res.status(400).send({msg:"body is mandatory"})
 
-    if(!category) return res.status(400).send("category is mandatory")
+    if(!authorId) return res.status(400).send({msg:"AuthorId is mandatory"})
 
-    if(!validate.test(title)) return res.status(400).send("plz Enter valid title")
+    if(!category) return res.status(400).send({msg:"category is mandatory"})
 
-    if(!validate.test(body)) return res.status(400).send("plz Enter valid body")
+    if(!tags) return res.status(400).send({msg:"tags is emmty"})
 
-    if(!validateObjectId.test(authorId)) return res.status(400).send("plz Enter valid authorId")
+    if(!validate.test(title)) return res.status(400).send({msg:"plz Enter valid title"})
 
-    if(!validate.test(category)) return res.status(400).send("plz Enter valid category")
+    if(!validate.test(body)) return res.status(400).send({msg:"plz Enter valid body"})
+
+    if(!validateObjectId.test(authorId)) return res.status(400).send({msg:"plz Enter valid authorId"})
+
+    if(!validate.test(category)) return res.status(400).send({msg:"plz Enter valid category"})
 
     const checkAuthorId = await authorModel.findById(authorId)
 
@@ -61,19 +65,30 @@ const getBlogs = async (req,res)=>{
 
         let keys = Object.keys(filter)
 
-       
+        let validateObjectId = /^[a-f\d]{24}$/i
+
+        // const blogId =  filter._id
+       if(filter.authorId) {
+        if(!validateObjectId.test(filter.authorId)) return res.send({msg:"Invalid Author id"})
+       }
+       if(filter._id) {
+        if(!validateObjectId.test(filter._id)) return res.send({msg:"Invalid Blog id"})
+       }
+
+        // if(!validateObjectId.test(blogId)) return res.send({msg:"Ivalid id"})
+        // if(!validateObjectId.test(authorId)) return res.send({msg:"Ivalid id"})
         
         const getData = await blogsModel.find(filter).populate("authorId")
         
 
-        if(getData.length===0) return res.status(404).send("Document not found")
+        if(getData.length===0) return res.status(404).send({msg:"Document not found"})
 
         
         const getBlogs =  getData.filter((x)=>{
             return ((x.isDeleted === false) && (x.isPublished === true))
         })
        
-        if(getBlogs.length===0) return res.status(404).send("user not found")
+        if(getBlogs.length===0) return res.status(404).send({msg:"user not found"})
         
         if(keys.length==0) return res.status(200).send({result:getBlogs})
 
@@ -100,24 +115,21 @@ const updateBlog= async(req,res)=>{
 
     // let validateObjectId = /^[a-f\d]{24}$/i
 
-    let validateObjectId = /^[a-f\d]{24}$/i
+    // let validateObjectId = /^[a-f\d]{24}$/i
 
-    if(!validateObjectId.test(blogId)) return res.send("invalid blogId")
+    // if(!validateObjectId.test(blogId)) return res.send({msg:"invalid blogId"})
    
-    if(Object.keys(data).length==0) return res.status(400).send("body is empty")
+    if(Object.keys(data).length==0) return res.status(400).send({msg:"body is empty"})
 
-    const {title,body,tags,authorId,category,subcategory} = data
+    const {title,body,tags,category,subcategory} = data
             
         
-    // let checkAuthorId = await authorModel.findById(authorId)
-    // if(!checkAuthorId) return res.status(400).send("authorId is invalid, plz Enter valid authorId")
-    // if(!validateObjectId.test(authorId)) return res.status(400).send("plz Enter valid authorId")
-    // if(!blogId) return res.status(400).send({msg: "id Must be present"})
-    if(!validate.test(title)) return res.status(400).send("plz Enter valid title")
-    if(!validate.test(body)) return res.status(400).send("plz Enter valid body")
-    if(!validate.test(tags)) return res.status(400).send("plz Enter valid tags")
-    if(!validate.test(category)) return res.status(400).send("plz Enter valid category")
-    if(!validate.test(subcategory)) return res.status(400).send("plz Enter valid subcategory")
+    
+    if(!validate.test(title)) return res.status(400).send({msg:"plz Enter valid title"})
+    if(!validate.test(body)) return res.status(400).send({msg:"plz Enter valid body"})
+    if(!validate.test(tags)) return res.status(400).send({msg:"plz Enter valid tags"})
+    if(!validate.test(category)) return res.status(400).send({msg:"plz Enter valid category"})
+    if(!validate.test(subcategory)) return res.status(400).send({msg:"plz Enter valid subcategory"})
    
 
     const id= await  blogsModel.findOne({_id:blogId})
@@ -143,7 +155,7 @@ const deleteBlog = async (req,res)=>{
    try {
     let blogId=req.params.blogId
 
-
+    let currentdate=moment().format("YYYY-MM-DD HH:mm:ss")
     if(!blogId) return res.status(400).send({msg:"BlogId Id is Not present"})
 
     let checkBlog= await blogsModel.find({_id:blogId})
@@ -156,7 +168,7 @@ const deleteBlog = async (req,res)=>{
 
    if(checkBlogStatus.length===0) return res.status(404).send({msg:"document is not present"})
    
-    let deleted= await blogsModel.findOneAndUpdate({_id:blogId},{$set:{isDeleted:true}}, {new:true})
+    let deleted= await blogsModel.findOneAndUpdate({_id:blogId},{$set:{isDeleted:true,deletedAt:currentdate}}, {new:true})
 
     res.status(200).send({status:"success",deleteData:deleted})
 
@@ -181,33 +193,38 @@ const deleteByQuery = async(req,res)=>{
     if(keys.length==0) return res.status(400).send({msg:"Enter valid filter / url / ID"})
 
     
-  let validateObjectId = /^[a-f\d]{24}$/i
+     let validateObjectId = /^[a-f\d]{24}$/i
   
 
-    const {authorId} = data
+  if(data.authorId) {
+    if(!validateObjectId.test(data.authorId)) return res.send({msg:"Invalid Author id"})
+   }
 
-    if(!validateObjectId.test(authorId)) return res.status(400).send({msg:"plz Enter valid filter"})
+    
 
 
   
     const checkBlockStatus = await blogsModel.find(data)
   
+    console.log("checkBlockStatusc",checkBlockStatus)
   
    
     const statusFilter = checkBlockStatus.filter((x)=>{
         return ((x.authorId==authId)&&(x.isDeleted==false))
     })
+
+    console.log(statusFilter)
   
     if(statusFilter.length===0) return res.status(404).send({msg:"Document not found, plz enter valid input"})
 
     const finalAuthor = statusFilter[0]
     const finalAuthorId=finalAuthor.authorId
     
-    const delteItem = await blogsModel.updateMany({authorId:finalAuthorId,isDeleted:false,data},{$set:{isDeleted:true}},{new:true})
-   console.log(delteItem)
-    if(delteItem. modifiedCount===0) return res.status(404).send({msg:"Document not found, Plz check query"})
+    const deleteItem = await blogsModel.updateMany({authorId:authId,isDeleted:false,data},{$set:{isDeleted:true}},{new:true})
+   console.log(deleteItem)
+    if(deleteItem.modifiedCount===0) return res.status(404).send({msg:"Document not found, Plz check query"})
 
-    res.status(200).send(delteItem)
+    res.status(200).send(deleteItem)
 
    } catch (error) {
 

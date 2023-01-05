@@ -37,7 +37,7 @@ const userVerify = async (req,res,next) => {
    
     let validateObjectId = /^[a-f\d]{24}$/i
    
-    if(!validateObjectId.test(blogId)) return res.status(400).send("invalid blog id")
+    if(!validateObjectId.test(blogId)) return res.status(400).send({msg:"invalid blog id"})
     
     let decodedToken = jwt.verify(token, "Bloging-site-is-very-secure",);
 

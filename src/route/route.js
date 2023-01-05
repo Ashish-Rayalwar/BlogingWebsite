@@ -16,7 +16,7 @@ router.delete("/blogs", middleware.tokenVerify, blogsController.deleteByQuery)
 router.post('/login',  loginUser.loginUser)
 
 router.all("/*", (req,res)=>{
-    res.status(400).send("plz send correct url")
+    res.status(400).send({msg:"plz send correct url"})
 })
 
 

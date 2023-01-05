@@ -43,8 +43,8 @@ const blogSchema = new mongoose.Schema({
     },
 
     deletedAt:{
-        type:Date,
-        default:Date.now()
+        type:Date
+        
     },
 
     publishedAt:{
