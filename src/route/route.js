@@ -12,7 +12,7 @@ router.post("/blogs", middleware.tokenVerify, blogsController.createBlog)
 router.get("/blogs", middleware.tokenVerify, blogsController.getBlogs)
 router.put("/blogs/:blogId",  middleware.tokenVerify, middleware.userVerify, blogsController.updateBlog)
 router.delete("/blogs/:blogId",middleware.tokenVerify, middleware.userVerify, blogsController.deleteBlog)
-router.delete("/blogs", middleware.tokenVerify, middleware.userQueryVerify, blogsController.deleteByQuery)
+router.delete("/blogs", middleware.tokenVerify, blogsController.deleteByQuery)
 router.post('/login',  loginUser.loginUser)
 
 router.all("/*", (req,res)=>{

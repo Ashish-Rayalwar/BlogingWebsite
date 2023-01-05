@@ -24,7 +24,7 @@ const loginUser = async function (req, res) {
 
       let token = jwt.sign(
         {
-          Id:user._id,
+          Id:user._id.toString(),
           project: "BlogingWebsite"
         },
         "Bloging-site-is-very-secure"
