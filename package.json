@@ -1,0 +1,29 @@
+{
+  "name": "blogingwebsite",
+  "version": "1.0.0",
+  "description": "Repository for backend cohort - Californium",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ashish-Rayalwar/BlogingWebsite.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ashish-Rayalwar/BlogingWebsite/issues"
+  },
+  "homepage": "https://github.com/Ashish-Rayalwar/BlogingWebsite#readme",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "moment": "^2.29.4",
+    "mongoose": "^6.8.2",
+    "nodemon": "^2.0.20"
+  }
+}

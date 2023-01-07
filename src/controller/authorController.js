@@ -9,7 +9,7 @@ const create = async (req,res)=>{
        
     if(Object.keys(body).length==0) return res.status(400).send("body is empty")
 
-    let validate = /^([a-z                A-Z ]){2,30}$/
+    let validate = /^([a-z A-Z ]){2,30}$/
     
     let validateEmail = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 
